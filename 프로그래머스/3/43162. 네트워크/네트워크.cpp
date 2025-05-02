@@ -15,23 +15,7 @@ using namespace std;
 	{
 		int answer = 0;
 
-		//map< int, vector< int > > m;
 		vector< bool > v( computers.size(), false );
-
-		// 그래프 연결성을 확보
-		// for ( int i = 0; i < computers.size(); i++ )
-		// {
-		// 	for ( int k = 0; k < computers.[ i ].size(); k++ )
-		// 	{
-		// 		if ( k != 1 )
-		// 			continue;
-		// 
-		// 		if ( i == k )
-		// 			continue;
-		// 
-		// 		m[ i ].push_back( k );
-		// 	}
-		// }
 
 		// 노드를 하나씩 순회
 		for ( int i = 0; i < computers.size(); i++ )
@@ -44,10 +28,6 @@ using namespace std;
 			v[ i ] = true;
 
 			queue< int > q;
-			//auto iter = m.find( i );
-			//if ( iter == m.end() )
-			//	continue;
-
 			q.push( i );
 
 			while ( !q.empty() )
@@ -76,11 +56,44 @@ using namespace std;
 		return answer;
 	}
 
+	vector< bool > isVisited;
+
+	void DFS( const vector< vector< int > >& computers, int index )
+	{
+		if ( isVisited[ index ] )
+			return;
+
+		isVisited[ index ] = true;
+
+		for ( int k = 0; k < computers[ index ].size(); k++ )
+		{
+			if ( computers[ index ][ k ] != 1 )
+				continue;
+
+			if ( index == k )
+				continue;
+
+			DFS( computers, k );
+		}
+	}
+
 	int solution( int n, vector< vector< int > > computers )
 	{
 		int answer = 0;
 
-		answer = BFS( computers );
+		//answer = BFS( computers );
+
+		isVisited.resize( n, false );
+
+		for ( int i = 0; i < computers.size(); i++ )
+		{
+			if ( isVisited[ i ] )
+				continue;
+
+			answer++;
+
+			DFS( computers, i );
+		}
 
 		return answer;
 	}
